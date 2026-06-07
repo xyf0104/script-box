@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>无风工具箱 - 管理面板</title>
+  <meta name="description" content="无风工具箱 - Linux 服务器脚本管理平台">
+  <link rel="stylesheet" href="style.css?v=1.2.3">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- ===== 登录页 ===== -->
+  <div id="loginPage" class="login-page">
+    <div class="login-bg"></div>
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="brand-icon">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="22" stroke="url(#g1)" stroke-width="3"/><path d="M16 24l6 6 10-12" stroke="url(#g1)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="g1" x1="0" y1="0" x2="48" y2="48"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs></svg>
+        </div>
+        <h1>无风工具箱</h1>
+        <p class="login-ver">v1.2.1</p>
+      </div>
+      <form id="loginForm">
+        <div class="form-group">
+          <label>用户名</label>
+          <input type="text" id="loginUser" placeholder="请输入用户名" autocomplete="username" required>
+        </div>
+        <div class="form-group">
+          <label>密码</label>
+          <input type="password" id="loginPass" placeholder="请输入密码" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">登 录</button>
+        <p id="loginError" class="error-text" style="display:none"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== 管理面板 ===== -->
+  <div id="adminPanel" class="admin-panel" style="display:none">
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="logo"><span class="logo-icon">⚡</span> 无风工具箱</span>
+        <span class="version-tag">v1.2.1</span>
+      </div>
+      <div class="topbar-center">
+        <div class="install-cmd">
+          <span class="cmd-label">安装命令</span>
+          <code id="installCmd">bash &lt;(curl -sL xiass.com)</code>
+          <button class="btn-copy" onclick="copyInstallCmd()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            复制
+          </button>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="btn-theme" onclick="toggleTheme()" title="切换主题">
+          <span class="theme-icon" id="themeIcon">☀️</span>
+        </button>
+        <button class="btn btn-ghost btn-sm" onclick="logout()">退出</button>
+      </div>
+    </header>
+
+    <!-- 手机端标签切换 -->
+    <div class="mobile-tabs">
+      <button class="mobile-tab active" onclick="switchTab('menu')" id="tabMenu">📋 菜单</button>
+      <button class="mobile-tab" onclick="switchTab('preview')" id="tabPreview">🖥️ 预览</button>
+    </div>
+
+    <div class="main-content">
+      <!-- 左侧编辑器 -->
+      <div class="editor-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <h2>菜单管理</h2>
+            <span class="menu-count" id="menuStats"></span>
+          </div>
+          <div class="panel-actions">
+            <button class="btn btn-sm btn-outline" onclick="openConfigModal()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+              配置
+            </button>
+            <button class="btn btn-sm btn-primary" onclick="addRootItem()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              添加菜单
+            </button>
+          </div>
+        </div>
+        <div id="menuTree" class="menu-tree"></div>
+        <div class="panel-footer">
+          <button class="btn btn-primary btn-save" onclick="saveMenu()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>
+            保存菜单
+          </button>
+          <span id="saveStatus" class="save-status"></span>
+        </div>
+      </div>
+
+      <!-- 右侧终端 -->
+      <div class="preview-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <h2>终端预览</h2>
+          </div>
+          <button class="btn btn-sm btn-outline" onclick="refreshPreview()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23,4 23,10 17,10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+            刷新
+          </button>
+        </div>
+        <div class="terminal-wrapper">
+          <div class="terminal-dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+            <span class="terminal-title">bash — xiass.com</span>
+          </div>
+          <div class="terminal" id="terminalPreview"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 编辑弹窗 -->
+  <div id="editModal" class="modal" style="display:none">
+    <div class="modal-overlay" onclick="closeEditModal()"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="editModalTitle">编辑菜单项</h3>
+        <button class="modal-close" onclick="closeEditModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group"><label>名称</label><input type="text" id="editName" placeholder="菜单项名称"></div>
+        <div class="form-group"><label>类型</label><select id="editType" onchange="toggleUrlField()"><option value="script">脚本命令</option><option value="submenu">子菜单</option></select></div>
+        <div class="form-group" id="urlGroup"><label>脚本命令 / URL</label><textarea id="editUrl" rows="4" placeholder="bash 命令或 URL" class="font-mono"></textarea><p class="form-hint">支持直接 bash 命令或 URL</p></div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-ghost" onclick="closeEditModal()">取消</button><button class="btn btn-primary" onclick="confirmEdit()">确认</button></div>
+    </div>
+  </div>
+
+  <!-- 配置弹窗 -->
+  <div id="configModal" class="modal" style="display:none">
+    <div class="modal-overlay" onclick="closeConfigModal()"></div>
+    <div class="modal-content">
+      <div class="modal-header"><h3>⚙️ 工具箱配置</h3><button class="modal-close" onclick="closeConfigModal()">✕</button></div>
+      <div class="modal-body">
+        <div class="form-group"><label>工具箱名称</label><input type="text" id="configTitle" placeholder="无风工具箱"></div>
+        <div class="form-group"><label>版本号</label><input type="text" id="configVersion" placeholder="1.2.1"></div>
+        <div class="form-group"><label>ASCII Art 标题</label><textarea id="configAscii" rows="4" placeholder="ASCII Art..." class="font-mono"></textarea></div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-ghost" onclick="closeConfigModal()">取消</button><button class="btn btn-primary" onclick="saveConfig()">保存</button></div>
+    </div>
+  </div>
+
+  <!-- 查看脚本弹窗 -->
+  <div id="viewModal" class="modal" style="display:none">
+    <div class="modal-overlay" onclick="closeViewModal()"></div>
+    <div class="modal-content" style="width:560px">
+      <div class="modal-header">
+        <h3 id="viewModalTitle">脚本详情</h3>
+        <button class="modal-close" onclick="closeViewModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>脚本URL</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <code id="viewUrl" style="flex:1;padding:8px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--accent-light);word-break:break-all;font-family:'JetBrains Mono',monospace"></code>
+            <button class="btn btn-sm btn-outline" id="copyUrlBtn" onclick="copyScriptUrl()">复制</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>脚本内容</label>
+          <pre id="viewContent" style="max-height:350px;overflow:auto;padding:12px;background:var(--terminal-bg);border:1px solid var(--terminal-border);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--terminal-text);line-height:1.6;white-space:pre-wrap;word-break:break-all"></pre>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeViewModal()">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js?v=1.2.3"></script>
+  <script>
+    function toggleTheme(){const h=document.documentElement,c=h.getAttribute('data-theme'),n=c==='dark'?'light':'dark';h.setAttribute('data-theme',n);localStorage.setItem('sb-theme',n);document.getElementById('themeIcon').textContent=n==='dark'?'☀️':'🌙'}
+    (function(){const s=localStorage.getItem('sb-theme');if(s){document.documentElement.setAttribute('data-theme',s);const i=document.getElementById('themeIcon');if(i)i.textContent=s==='dark'?'☀️':'🌙'}})();
+    function switchTab(tab){
+      const ep=document.querySelector('.editor-panel'),pp=document.querySelector('.preview-panel');
+      const tm=document.getElementById('tabMenu'),tp=document.getElementById('tabPreview');
+      if(tab==='menu'){ep.classList.add('tab-active');ep.classList.remove('tab-hidden');pp.classList.add('tab-hidden');pp.classList.remove('tab-active');tm.classList.add('active');tp.classList.remove('active')}
+      else{pp.classList.add('tab-active');pp.classList.remove('tab-hidden');ep.classList.add('tab-hidden');ep.classList.remove('tab-active');tp.classList.add('active');tm.classList.remove('active')}
+    }
+  </script>
+</body>
+</html>

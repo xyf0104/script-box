@@ -1,0 +1,160 @@
+{
+  "config": {
+    "title": "无风工具箱",
+    "version": "1.2.1",
+    "ascii": "╦ ╦╦ ╦╔═╗╔═╗╔╗╔╔═╗\n║║║║ ║╠╣ ║╣ ║║║║ ╦\n╚╩╝╚═╝╚  ╚═╝╝╚╝╚═╝"
+  },
+  "items": [
+    {
+      "id": "wufeng",
+      "name": "无风专属",
+      "type": "submenu",
+      "children": [
+        {
+          "id": "wf0",
+          "name": "VPS一键初始化(静态IP+BBR+SSH加固+看门狗)",
+          "type": "script",
+          "url": "bash <(curl -sL https://gitee.com/ranxiaoer/server-init/raw/master/server-init.sh)"
+        },
+        {
+          "id": "wf1",
+          "name": "S-UI 安装",
+          "type": "script",
+          "url": "bash <(curl -Ls https://raw.githubusercontent.com/xyf0104/demo/main/s-ui-install.sh)"
+        },
+        {
+          "id": "wf2",
+          "name": "SUI-Bridge 安装",
+          "type": "script",
+          "url": "bash <(curl -sL https://raw.githubusercontent.com/xyf0104/subhub/main/sui-bridge/install_bridge.sh)"
+        },
+        {
+          "id": "wf3",
+          "name": "Hysteria2 安装",
+          "type": "script",
+          "url": "wget -N --no-check-certificate https://raw.githubusercontent.com/xyf0104/hysteria2/main/hysteria.sh && bash hysteria.sh"
+        },
+        {
+          "id": "wf4",
+          "name": "Hysteria2 卸载",
+          "type": "script",
+          "url": "bash <(curl -fsSL https://get.hy2.sh/) --remove"
+        },
+        {
+          "id": "wf5",
+          "name": "SubHub 安装(Gitee)",
+          "type": "script",
+          "url": "git clone https://gitee.com/ranxiaoer/subhub.git /opt/subhub && cd /opt/subhub && bash install.sh"
+        },
+        {
+          "id": "wf6",
+          "name": "SSL证书管理(acme)",
+          "type": "script",
+          "url": "bash <(curl -Ls https://raw.githubusercontent.com/yonggekkk/acme-yg/main/acme.sh)"
+        },
+        {
+          "id": "wf7",
+          "name": "MoonTV影视 安装",
+          "type": "script",
+          "url": "bash <(curl -sL https://raw.githubusercontent.com/xyf0104/MoonTVPlus/main/install.sh)"
+        },
+        {
+          "id": "wf8",
+          "name": "AI点数监控 安装",
+          "type": "script",
+          "url": "git clone https://gitee.com/ranxiaoer/ai-credits-monitor.git /opt/ai-credits-monitor && cd /opt/ai-credits-monitor && sudo ./install.sh"
+        },
+        {
+          "id": "wf9",
+          "name": "NPM反代 安装",
+          "type": "script",
+          "url": "docker run -d --name npm -p 80:80 -p 81:81 -p 443:443 -v /home/docker/npm/data:/data -v /home/docker/npm/letsencrypt:/etc/letsencrypt --restart=always jc21/nginx-proxy-manager:latest && echo '访问 http://IP:81 账号admin@example.com 密码changeme'"
+        },
+        {
+          "id": "item_1780805113961_qo5s",
+          "name": "然小二库存系统",
+          "type": "script",
+          "url": "bash <(curl -sL r.xiass.com)"
+        }
+      ]
+    },
+    {
+      "id": "info",
+      "name": "系统信息查询",
+      "type": "script",
+      "url": "https://xiass.com/scripts/linux_info.sh"
+    },
+    {
+      "id": "update",
+      "name": "系统更新",
+      "type": "script",
+      "url": "https://xiass.com/scripts/linux_update.sh"
+    },
+    {
+      "id": "clean",
+      "name": "系统清理",
+      "type": "script",
+      "url": "https://xiass.com/scripts/linux_clean.sh"
+    },
+    {
+      "id": "tools",
+      "name": "基础工具",
+      "type": "script",
+      "url": "https://xiass.com/scripts/linux_tools.sh"
+    },
+    {
+      "id": "bbr",
+      "name": "BBR管理",
+      "type": "script",
+      "url": "https://xiass.com/scripts/linux_bbr.sh"
+    },
+    {
+      "id": "docker",
+      "name": "Docker管理",
+      "type": "script",
+      "url": "https://xiass.com/scripts/linux_docker.sh"
+    },
+    {
+      "id": "warp",
+      "name": "WARP管理",
+      "type": "script",
+      "url": "https://xiass.com/scripts/linux_warp.sh"
+    },
+    {
+      "id": "test",
+      "name": "测试脚本合集",
+      "type": "script",
+      "url": "https://xiass.com/scripts/linux_test.sh"
+    },
+    {
+      "id": "sys_tools",
+      "name": "系统工具",
+      "type": "script",
+      "url": "https://xiass.com/scripts/linux_systemtools.sh"
+    },
+    {
+      "id": "app_market",
+      "name": "应用市场",
+      "type": "script",
+      "url": "https://xiass.com/scripts/linux_appmarket.sh"
+    },
+    {
+      "id": "ai_tools",
+      "name": "AI工具",
+      "type": "script",
+      "url": "https://xiass.com/scripts/linux_ai.sh"
+    },
+    {
+      "id": "net_tools",
+      "name": "网络安全",
+      "type": "script",
+      "url": "https://xiass.com/scripts/linux_security.sh"
+    },
+    {
+      "id": "media_tools",
+      "name": "影视媒体",
+      "type": "script",
+      "url": "https://xiass.com/scripts/linux_media.sh"
+    }
+  ]
+}

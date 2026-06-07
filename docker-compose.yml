@@ -1,0 +1,14 @@
+services:
+  script-box:
+    build: .
+    container_name: script-box
+    restart: unless-stopped
+    ports:
+      - '3080:3080'
+    environment:
+      - USERNAME=${SB_USERNAME}
+      - PASSWORD=${SB_PASSWORD}
+      - BASE_URL=https://xiass.com
+    volumes:
+      - ./scripts:/app/scripts
+      - ./data:/app/data

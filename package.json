@@ -1,0 +1,14 @@
+{
+  "name": "script-box",
+  "version": "1.0.0",
+  "description": "脚本工具箱管理平台 - Web管理终端菜单，自动生成交互式Shell脚本",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cookie-parser": "^1.4.6"
+  }
+}
