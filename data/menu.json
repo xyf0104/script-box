@@ -14,7 +14,7 @@
           "id": "wf0",
           "name": "VPS一键初始化(静态IP+BBR+SSH加固+看门狗)",
           "type": "script",
-          "url": "bash <(curl -sL https://gitee.com/ranxiaoer/server-init/raw/master/server-init.sh)"
+          "url": "bash <(curl -sL https://raw.githubusercontent.com/xyf0104/server-init/master/server-init.sh)"
         },
         {
           "id": "wf1",
@@ -42,9 +42,9 @@
         },
         {
           "id": "wf5",
-          "name": "SubHub 安装(Gitee)",
+          "name": "SubHub 安装",
           "type": "script",
-          "url": "git clone https://gitee.com/ranxiaoer/subhub.git /opt/subhub && cd /opt/subhub && bash install.sh"
+          "url": "git clone https://github.com/xyf0104/subhub.git /opt/subhub && cd /opt/subhub && bash install.sh"
         },
         {
           "id": "wf6",
@@ -62,7 +62,7 @@
           "id": "wf8",
           "name": "AI点数监控 安装",
           "type": "script",
-          "url": "git clone https://gitee.com/ranxiaoer/ai-credits-monitor.git /opt/ai-credits-monitor && cd /opt/ai-credits-monitor && sudo ./install.sh"
+          "url": "git clone https://github.com/xyf0104/ai-credits-monitor.git /opt/ai-credits-monitor && cd /opt/ai-credits-monitor && sudo ./install.sh"
         },
         {
           "id": "wf9",
