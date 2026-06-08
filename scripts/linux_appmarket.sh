@@ -110,14 +110,8 @@ while true; do
        "docker run -d --name easyimage -p 8085:80 -v /home/docker/easyimage:/app/web/config --restart always ddsderek/easyimage:latest" ;;
     15) clear; docker_app "emby" "emby/embyserver:latest" "8920" "Emby多媒体管理" \
        "docker run -d --name emby -p 8920:8096 -v /home/docker/emby/config:/config -v /home/docker/emby/media:/media --restart always emby/embyserver:latest" ;;
-    16) clear
-       echo -e "${CYAN}${BOLD}Speedtest测速面板${NC}"
-       echo "LibreSpeed 测速 + 管理面板"
-       echo "------------------------"
-       _st="/tmp/st_install_$$.sh"
-       curl -sL "https://raw.githubusercontent.com/xyf0104/speedtest-panel/main/install.sh" -o "$_st" 2>/dev/null
-       if [ -s "$_st" ]; then bash "$_st"; else echo -e "${RED}❌ 脚本下载失败${NC}"; fi
-       rm -f "$_st" ;;
+    16) clear; docker_app "speedtest" "ghcr.io/librespeed/speedtest:latest" "6681" "Speedtest测速面板" \
+       "docker run -d --name speedtest -e MODE=standalone -e TITLE=SpeedTest -e USE_NEW_DESIGN=true -p 6681:8080 --restart always ghcr.io/librespeed/speedtest:latest" ;;
     17) clear; docker_app "adguardhome" "adguard/adguardhome:latest" "3000" "AdGuardHome去广告" \
        "docker run -d --name adguardhome -p 3000:3000 -p 53:53/tcp -p 53:53/udp -v /home/docker/adguard/work:/opt/adguardhome/work -v /home/docker/adguard/conf:/opt/adguardhome/conf --restart always adguard/adguardhome:latest" ;;
     18) clear; docker_app "onlyoffice" "onlyoffice/documentserver:latest" "8082" "OnlyOffice在线办公" \

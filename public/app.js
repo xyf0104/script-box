@@ -155,8 +155,10 @@ function renderItems(items, parentId) {
     const chevron = isSubmenu ? `<span class="item-chevron ${isExpanded ? 'expanded' : ''}">▶</span>` : '';
     const icon = isSubmenu ? (isExpanded ? '📂' : '📁') : '📜';
     const typeLabel = isSubmenu ? `${childCount}项` : '脚本';
-    // 子菜单点击展开/收起，脚本项点击无操作
-    const clickHandler = isSubmenu ? `onclick="toggleSubmenu('${item.id}', event)"` : '';
+    // 子菜单点击展开/收起，脚本项点击打开编辑弹窗
+    const clickHandler = isSubmenu
+      ? `onclick="toggleSubmenu('${item.id}', event)"`
+      : `onclick="if(!event.target.closest('.item-actions')&&!event.target.closest('.drag-handle'))editItem('${item.id}')"`;
 
     html += `
       <div class="tree-item" data-id="${item.id}" data-parent="${parentId}" draggable="true"
@@ -188,6 +190,11 @@ function renderItems(items, parentId) {
 
 // ===== 拖拽排序 =====
 function handleDragStart(e, itemId, parentId) {
+  // NOTE: 只允许从拖拽手柄发起拖拽，避免干扰子菜单点击展开
+  if (!e.target.closest('.drag-handle')) {
+    e.preventDefault();
+    return;
+  }
   dragState.dragging = itemId;
   dragState.parentId = parentId;
   e.dataTransfer.effectAllowed = 'move';

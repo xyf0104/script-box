@@ -651,13 +651,14 @@ body {
 .modal-content {
   position: relative;
   width: 460px;
-  max-height: 80vh;
+  max-height: 85vh;
   background: var(--bg-1);
   border: 1px solid var(--border);
   border-radius: 16px;
   box-shadow: var(--shadow-lg);
   animation: fadeInUp 0.25s ease;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .modal-header {
@@ -678,7 +679,11 @@ body {
 }
 .modal-close:hover { color: var(--text-0); background: var(--bg-hover); }
 
-.modal-body { padding: 24px; }
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
 .modal-footer {
   display: flex;
   justify-content: flex-end;
@@ -778,6 +783,5 @@ body {
   border-top: 2px solid var(--accent, #6366f1);
   margin-top: -2px;
 }
-/* 脚本项点击不再有指针效果 */
+/* 脚本项不显示指针 */
 .tree-item-row.is-script { cursor: default; }
-.tree-item-row.is-submenu { cursor: pointer; }
