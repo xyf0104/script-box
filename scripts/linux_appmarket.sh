@@ -111,7 +111,7 @@ while true; do
     15) clear; docker_app "emby" "emby/embyserver:latest" "8920" "Emby多媒体管理" \
        "docker run -d --name emby -p 8920:8096 -v /home/docker/emby/config:/config -v /home/docker/emby/media:/media --restart always emby/embyserver:latest" ;;
     16) clear; docker_app "speedtest" "ghcr.io/librespeed/speedtest:latest" "6681" "Speedtest测速面板" \
-       "docker run -d --name speedtest -p 6681:80 --restart always ghcr.io/librespeed/speedtest:latest" ;;
+       "docker run -d --name speedtest -e MODE=standalone -p 6681:8080 --restart always ghcr.io/librespeed/speedtest:latest" ;;
     17) clear; docker_app "adguardhome" "adguard/adguardhome:latest" "3000" "AdGuardHome去广告" \
        "docker run -d --name adguardhome -p 3000:3000 -p 53:53/tcp -p 53:53/udp -v /home/docker/adguard/work:/opt/adguardhome/work -v /home/docker/adguard/conf:/opt/adguardhome/conf --restart always adguard/adguardhome:latest" ;;
     18) clear; docker_app "onlyoffice" "onlyoffice/documentserver:latest" "8082" "OnlyOffice在线办公" \

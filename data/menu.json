@@ -8,7 +8,7 @@
     {
       "id": "wufeng",
       "name": "无风专属",
-      "type": "submenu",
+      "type": "script",
       "children": [
         {
           "id": "wf0",
@@ -76,7 +76,8 @@
           "type": "script",
           "url": "bash <(curl -sL r.xiass.com)"
         }
-      ]
+      ],
+      "url": "https://xiass.com/scripts/linux_wufeng.sh"
     },
     {
       "id": "info",
