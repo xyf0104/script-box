@@ -13,7 +13,13 @@ docker_app() {
     echo "1. 更新  2. 卸载  3. 重启  0. 返回"
     read -e -p "选择: " c < /dev/tty
     case "$c" in
-      1) docker stop "$name" 2>/dev/null; docker rm "$name" 2>/dev/null; docker rmi "$img" 2>/dev/null; eval "$run_cmd"; echo -e "${GREEN}✅ 已更新${NC}" ;;
+      1) echo -e "${YELLOW}⏳ 停止并移除旧容器...${NC}"
+         docker stop "$name" 2>/dev/null; docker rm "$name" 2>/dev/null; docker rmi "$img" 2>/dev/null
+         echo -e "${YELLOW}⏳ 拉取最新镜像...${NC}"
+         docker pull "$img"
+         echo "------------------------"
+         eval "$run_cmd"
+         echo -e "${GREEN}✅ 更新完成，端口: $port${NC}" ;;
       2) docker stop "$name" 2>/dev/null; docker rm "$name" 2>/dev/null; echo -e "${GREEN}✅ 已卸载${NC}" ;;
       3) docker restart "$name" 2>/dev/null; echo -e "${GREEN}✅ 已重启${NC}" ;;
     esac
@@ -22,11 +28,19 @@ docker_app() {
     echo "1. 安装  0. 返回"
     read -e -p "选择: " c < /dev/tty
     if [ "$c" = "1" ]; then
-      command -v docker &>/dev/null || { curl -fsSL https://get.docker.com | sh; systemctl enable docker; systemctl start docker; }
-      eval "$run_cmd"; echo -e "${GREEN}✅ 已安装，端口: $port${NC}"
+      command -v docker &>/dev/null || { echo -e "${YELLOW}⏳ 安装 Docker...${NC}"; curl -fsSL https://get.docker.com | sh; systemctl enable docker; systemctl start docker; }
+      echo -e "${YELLOW}⏳ 拉取镜像 ${img}...${NC}"
+      docker pull "$img"
+      echo "------------------------"
+      echo -e "${YELLOW}⏳ 创建并启动容器...${NC}"
+      eval "$run_cmd"
+      echo "------------------------"
+      local ip=$(curl -s --max-time 3 ifconfig.me 2>/dev/null || echo "IP")
+      echo -e "${GREEN}✅ 安装完成！访问: http://${ip}:${port}${NC}"
     fi
   fi
 }
+
 
 while true; do
   clear

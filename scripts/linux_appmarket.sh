@@ -10,13 +10,20 @@ docker_app() {
   echo "------------------------"
   if docker ps -a --format '{{.Names}}' 2>/dev/null | grep -q "^${name}$"; then
     local status=$(docker inspect -f '{{.State.Status}}' "$name" 2>/dev/null)
-    echo -e "状态: ${GREEN}已安装 ($status)${NC}"
+    echo -e "状态: ${GREEN}已安装 ($status)${NC}  端口: $port"
     echo ""
     echo "1. 更新    2. 卸载    3. 重启    0. 返回"
     read -e -p "选择: " c < /dev/tty
     case "$c" in
-      1) docker stop "$name" 2>/dev/null; docker rm "$name" 2>/dev/null; docker rmi "$img" 2>/dev/null
-         eval "$run_cmd"; echo -e "${GREEN}✅ 已更新${NC}" ;;
+      1) echo -e "${YELLOW}⏳ 正在停止并移除旧容器...${NC}"
+         docker stop "$name" 2>/dev/null; docker rm "$name" 2>/dev/null; docker rmi "$img" 2>/dev/null
+         echo -e "${YELLOW}⏳ 正在拉取最新镜像...${NC}"
+         docker pull "$img"
+         echo "------------------------"
+         echo -e "${YELLOW}⏳ 正在启动新容器...${NC}"
+         eval "$run_cmd"
+         echo "------------------------"
+         echo -e "${GREEN}✅ 更新完成，访问端口: $port${NC}" ;;
       2) docker stop "$name" 2>/dev/null; docker rm "$name" 2>/dev/null
          echo -e "${GREEN}✅ 已卸载${NC}" ;;
       3) docker restart "$name" 2>/dev/null; echo -e "${GREEN}✅ 已重启${NC}" ;;
@@ -28,11 +35,19 @@ docker_app() {
     read -e -p "选择: " c < /dev/tty
     if [ "$c" = "1" ]; then
       if ! command -v docker &>/dev/null; then
-        echo "正在安装Docker..."; curl -fsSL https://get.docker.com | sh
+        echo -e "${YELLOW}⏳ 正在安装 Docker...${NC}"
+        curl -fsSL https://get.docker.com | sh
         systemctl enable docker; systemctl start docker
       fi
+      echo -e "${YELLOW}⏳ 正在拉取镜像 ${img}...${NC}"
+      docker pull "$img"
+      echo "------------------------"
+      echo -e "${YELLOW}⏳ 正在创建并启动容器...${NC}"
       eval "$run_cmd"
-      echo -e "${GREEN}✅ 已安装，访问端口: $port${NC}"
+      echo "------------------------"
+      local ip=$(curl -s --max-time 3 ifconfig.me 2>/dev/null || echo "IP")
+      echo -e "${GREEN}✅ 安装完成！${NC}"
+      echo -e "${GREEN}   访问地址: http://${ip}:${port}${NC}"
     fi
   fi
 }
