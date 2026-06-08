@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>无风工具箱 - 管理面板</title>
   <meta name="description" content="无风工具箱 - Linux 服务器脚本管理平台">
-  <link rel="stylesheet" href="style.css?v=1.2.3">
+  <link rel="stylesheet" href="style.css?v=1.3.0">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -131,6 +131,10 @@
         <div class="form-group"><label>名称</label><input type="text" id="editName" placeholder="菜单项名称"></div>
         <div class="form-group"><label>类型</label><select id="editType" onchange="toggleUrlField()"><option value="script">脚本命令</option><option value="submenu">子菜单</option></select></div>
         <div class="form-group" id="urlGroup"><label>脚本命令 / URL</label><textarea id="editUrl" rows="4" placeholder="bash 命令或 URL" class="font-mono"></textarea><p class="form-hint">支持直接 bash 命令或 URL</p></div>
+        <div class="form-group" id="editScriptPreview" style="display:none">
+          <label>脚本预览</label>
+          <pre id="editScriptContent" style="max-height:250px;overflow:auto;padding:12px;background:var(--terminal-bg);border:1px solid var(--terminal-border);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--terminal-text);line-height:1.6;white-space:pre-wrap;word-break:break-all"></pre>
+        </div>
       </div>
       <div class="modal-footer"><button class="btn btn-ghost" onclick="closeEditModal()">取消</button><button class="btn btn-primary" onclick="confirmEdit()">确认</button></div>
     </div>
@@ -150,34 +154,9 @@
     </div>
   </div>
 
-  <!-- 查看脚本弹窗 -->
-  <div id="viewModal" class="modal" style="display:none">
-    <div class="modal-overlay" onclick="closeViewModal()"></div>
-    <div class="modal-content" style="width:560px">
-      <div class="modal-header">
-        <h3 id="viewModalTitle">脚本详情</h3>
-        <button class="modal-close" onclick="closeViewModal()">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label>脚本URL</label>
-          <div style="display:flex;gap:8px;align-items:center">
-            <code id="viewUrl" style="flex:1;padding:8px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--accent-light);word-break:break-all;font-family:'JetBrains Mono',monospace"></code>
-            <button class="btn btn-sm btn-outline" id="copyUrlBtn" onclick="copyScriptUrl()">复制</button>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>脚本内容</label>
-          <pre id="viewContent" style="max-height:350px;overflow:auto;padding:12px;background:var(--terminal-bg);border:1px solid var(--terminal-border);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--terminal-text);line-height:1.6;white-space:pre-wrap;word-break:break-all"></pre>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" onclick="closeViewModal()">关闭</button>
-      </div>
-    </div>
-  </div>
+  <!-- 查看脚本弹窗已整合到编辑弹窗中 -->
 
-  <script src="app.js?v=1.2.3"></script>
+  <script src="app.js?v=1.3.0"></script>
   <script>
     function toggleTheme(){const h=document.documentElement,c=h.getAttribute('data-theme'),n=c==='dark'?'light':'dark';h.setAttribute('data-theme',n);localStorage.setItem('sb-theme',n);document.getElementById('themeIcon').textContent=n==='dark'?'☀️':'🌙'}
     (function(){const s=localStorage.getItem('sb-theme');if(s){document.documentElement.setAttribute('data-theme',s);const i=document.getElementById('themeIcon');if(i)i.textContent=s==='dark'?'☀️':'🌙'}})();

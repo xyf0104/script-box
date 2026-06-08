@@ -114,7 +114,7 @@ while true; do
        echo -e "${CYAN}${BOLD}Speedtest测速面板${NC}"
        echo "LibreSpeed 测速 + 管理面板"
        echo "------------------------"
-       local _st="/tmp/st_install_$$.sh"
+       _st="/tmp/st_install_$$.sh"
        curl -sL "https://raw.githubusercontent.com/xyf0104/speedtest-panel/main/install.sh" -o "$_st" 2>/dev/null
        if [ -s "$_st" ]; then bash "$_st"; else echo -e "${RED}❌ 脚本下载失败${NC}"; fi
        rm -f "$_st" ;;

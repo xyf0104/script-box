@@ -8,6 +8,7 @@ let editingItem = null;
 let editingParent = null; // null = root, or parent item reference
 let isNewItem = false;
 const expandedItems = new Set(); // track which submenus are expanded
+let dragState = { dragging: null, parentId: null }; // 拖拽状态
 
 // ===== Init =====
 document.addEventListener('DOMContentLoaded', () => {
@@ -154,18 +155,21 @@ function renderItems(items, parentId) {
     const chevron = isSubmenu ? `<span class="item-chevron ${isExpanded ? 'expanded' : ''}">▶</span>` : '';
     const icon = isSubmenu ? (isExpanded ? '📂' : '📁') : '📜';
     const typeLabel = isSubmenu ? `${childCount}项` : '脚本';
+    // 子菜单点击展开/收起，脚本项点击无操作
+    const clickHandler = isSubmenu ? `onclick="toggleSubmenu('${item.id}', event)"` : '';
 
     html += `
-      <div class="tree-item" data-id="${item.id}">
-        <div class="tree-item-row ${isSubmenu ? 'is-submenu' : 'is-script'} ${isExpanded ? 'is-expanded' : ''}" ${isSubmenu ? `onclick="toggleSubmenu('${item.id}', event)"` : `onclick="viewScript('${item.id}', event)"`}>
+      <div class="tree-item" data-id="${item.id}" data-parent="${parentId}" draggable="true"
+           ondragstart="handleDragStart(event, '${item.id}', '${parentId}')"
+           ondragover="handleDragOver(event)" ondrop="handleDrop(event, '${item.id}', '${parentId}')">
+        <div class="tree-item-row ${isSubmenu ? 'is-submenu' : 'is-script'} ${isExpanded ? 'is-expanded' : ''}" ${clickHandler}>
+          <span class="drag-handle" title="拖拽排序">⠿</span>
           ${chevron}
           <span class="item-number">${index + 1}</span>
           <span class="item-icon">${icon}</span>
           <span class="item-name">${escapeHtml(item.name)}</span>
           <span class="item-type">${typeLabel}</span>
           <div class="item-actions">
-            ${index > 0 ? `<button class="btn-icon" onclick="event.stopPropagation();moveItem('${item.id}', '${parentId}', -1)" title="上移">↑</button>` : ''}
-            ${index < items.length - 1 ? `<button class="btn-icon" onclick="event.stopPropagation();moveItem('${item.id}', '${parentId}', 1)" title="下移">↓</button>` : ''}
             <button class="btn-icon" onclick="event.stopPropagation();editItem('${item.id}')" title="编辑">✏️</button>
             <button class="btn-icon danger" onclick="event.stopPropagation();deleteItem('${item.id}', '${parentId}')" title="删除">🗑</button>
           </div>
@@ -180,6 +184,51 @@ function renderItems(items, parentId) {
     `;
   });
   return html;
+}
+
+// ===== 拖拽排序 =====
+function handleDragStart(e, itemId, parentId) {
+  dragState.dragging = itemId;
+  dragState.parentId = parentId;
+  e.dataTransfer.effectAllowed = 'move';
+  e.target.closest('.tree-item').classList.add('dragging');
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  // 高亮放置目标
+  const target = e.target.closest('.tree-item');
+  document.querySelectorAll('.tree-item.drag-over').forEach(el => el.classList.remove('drag-over'));
+  if (target) target.classList.add('drag-over');
+}
+
+function handleDrop(e, targetId, targetParentId) {
+  e.preventDefault();
+  document.querySelectorAll('.dragging,.drag-over').forEach(el => el.classList.remove('dragging', 'drag-over'));
+  if (!dragState.dragging || dragState.dragging === targetId) return;
+  // 只允许同层级拖拽（同 parent）
+  if (dragState.parentId !== targetParentId) return;
+
+  let items;
+  if (targetParentId && targetParentId !== 'null') {
+    const parent = findItem(menuData.items, targetParentId);
+    items = parent?.children;
+  } else {
+    items = menuData.items;
+  }
+  if (!items) return;
+
+  const fromIdx = items.findIndex(i => i.id === dragState.dragging);
+  const toIdx = items.findIndex(i => i.id === targetId);
+  if (fromIdx < 0 || toIdx < 0) return;
+
+  const [moved] = items.splice(fromIdx, 1);
+  items.splice(toIdx, 0, moved);
+
+  dragState.dragging = null;
+  renderMenuTree();
+  refreshPreview();
 }
 
 // ===== Menu Operations =====
@@ -214,12 +263,34 @@ function editItem(itemId) {
   editingItem = item;
   editingParent = null;
   isNewItem = false;
-  document.getElementById('editModalTitle').textContent = '编辑菜单项';
+  document.getElementById('editModalTitle').textContent = '编辑: ' + item.name;
   document.getElementById('editName').value = item.name;
   document.getElementById('editType').value = item.type;
   document.getElementById('editUrl').value = item.url || '';
   toggleUrlField();
+  // 如果是脚本类型，加载脚本预览
+  loadScriptPreview(item);
   openEditModal();
+}
+
+/** 在编辑弹窗中加载脚本预览 */
+function loadScriptPreview(item) {
+  const previewEl = document.getElementById('editScriptPreview');
+  if (!previewEl) return;
+  if (item.type !== 'script' || !item.url) {
+    previewEl.style.display = 'none';
+    return;
+  }
+  previewEl.style.display = 'block';
+  const contentEl = document.getElementById('editScriptContent');
+  contentEl.textContent = '加载中...';
+  if (item.url.startsWith('http://') || item.url.startsWith('https://')) {
+    fetch(item.url).then(r => r.ok ? r.text() : Promise.reject('HTTP ' + r.status))
+      .then(text => { contentEl.textContent = text.substring(0, 3000) + (text.length > 3000 ? '\n\n... (截断)' : ''); })
+      .catch(() => { contentEl.textContent = '无法加载 (可能跨域限制)'; });
+  } else {
+    contentEl.textContent = '命令: ' + item.url;
+  }
 }
 
 function confirmEdit() {
