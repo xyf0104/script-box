@@ -24,8 +24,17 @@ docker_app() {
          eval "$run_cmd"
          echo "------------------------"
          echo -e "${GREEN}✅ 更新完成，访问端口: $port${NC}" ;;
-      2) docker stop "$name" 2>/dev/null; docker rm "$name" 2>/dev/null
-         echo -e "${GREEN}✅ 已卸载${NC}" ;;
+      2) echo -e "${YELLOW}⏳ 正在卸载 ${name}...${NC}"
+         docker stop "$name" 2>/dev/null; docker rm "$name" 2>/dev/null
+         docker rmi "$img" 2>/dev/null
+         # 清理数据目录
+         rm -rf "/home/docker/${name}" 2>/dev/null
+         # 特殊清理
+         case "$name" in
+           speedtest) rm -rf /opt/speedtest 2>/dev/null ;;
+           adguardhome) rm -rf /home/docker/adguard 2>/dev/null ;;
+         esac
+         echo -e "${GREEN}✅ 已卸载并清理所有数据${NC}" ;;
       3) docker restart "$name" 2>/dev/null; echo -e "${GREEN}✅ 已重启${NC}" ;;
     esac
   else
